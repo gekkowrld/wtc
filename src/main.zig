@@ -1,3 +1,6 @@
+// This is a recreation of the what the commmit repository.
+// Some commits have been removed for various reasons (mostly personal).
+
 const std = @import("std");
 const zigstr = @import("zigstr");
 
@@ -5,7 +8,16 @@ const zigstr = @import("zigstr");
 //      https://github.com/ngerakines/commitment/blob/main/commit_messages.txt
 const cmsg = @embedFile("cmsg.txt");
 
-const default_names = [_][]const u8{ "Ali", "Andy", "April", "Brannon", "Chris", "Cord", "Dan", "Darren", "David", "Edy", "Ethan", "Fanny", "Gabe", "Ganesh", "Greg", "Guillaume", "James", "Jason", "Jay", "Jen", "John", "Kelan", "Kim", "Lauren", "Marcus", "Matt", "Matthias", "Mattie", "Mike", "Nate", "Nick", "Pasha", "Patrick", "Paul", "Preston", "Qi", "Rachel", "Rainer", "Randal", "Ryan", "Sarah", "Stephen", "Steve", "Steven", "Sunakshi", "Todd", "Tom", "Tony" };
+// zig fmt: off
+const default_names = [_][]const u8{ 
+    "Ali", "Andy", "April", "Brannon", "Chris", "Cord", "Dan", "Darren",
+    "David", "Edy", "Ethan", "Fanny", "Gabe", "Ganesh", "Greg", "Guillaume",
+    "James", "Jason","Jay", "Jen", "John", "Kelan", "Kim", "Lauren", "Marcus",
+    "Matt", "Matthias", "Mattie", "Mike", "Nate", "Nick", "Pasha", "Patrick",
+    "Paul", "Preston", "Qi", "Rachel", "Rainer", "Randal", "Ryan", "Sarah",
+    "Stephen", "Steve", "Steven", "Sunakshi", "Todd", "Tom", "Tony",
+};
+// zig fmt: on
 
 pub fn main() !void {
     var arena_instance = std.heap.ArenaAllocator.init(std.heap.page_allocator);
@@ -42,7 +54,7 @@ pub fn main() !void {
 
         index += xn.len;
 
-        while (index < rstr.byteLen()){
+        while (index < rstr.byteLen()) {
             const cc = try rstr.byteAt(index);
             if (cc == 'X') {
                 index += 1;
@@ -54,10 +66,10 @@ pub fn main() !void {
         }
 
         if (rstr.contains(",")) {
-        var ssr = std.mem.splitSequence(u8, try srange.toOwnedSlice(), ",");
-        start = std.fmt.parseInt(u64, ssr.first(), 10) catch start;
-        end = std.fmt.parseInt(u64, ssr.next() orelse "999", 10) catch end;
-        }else {
+            var ssr = std.mem.splitSequence(u8, try srange.toOwnedSlice(), ",");
+            start = std.fmt.parseInt(u64, ssr.first(), 10) catch start;
+            end = std.fmt.parseInt(u64, ssr.next() orelse "999", 10) catch end;
+        } else {
             const v = std.fmt.parseInt(u64, try srange.toOwnedSlice(), 10) catch start;
             start = v;
             end = v;
@@ -80,18 +92,13 @@ pub fn main() !void {
     std.debug.print("{}", .{rstr});
 }
 
-fn u64_to_bytes(value: u64) []u8 {
-    var buffer: [8]u8 = undefined;
-    std.mem.copy(u8, &buffer, &value);
-    return buffer[0..8]; // returns a slice of 8 bytes
-}
-
 fn split_string(allocator: std.mem.Allocator, str: []const u8) ![][]u8 {
     var strs = std.ArrayList([]u8).init(allocator);
     var st = std.ArrayList(u8).init(allocator);
 
     for (str) |s| {
-        if (s == '\n') {
+        // If the text is edited in windows
+        if (s == '\n' or s == '\r') {
             try strs.append(try st.toOwnedSlice());
             continue;
         }
@@ -102,5 +109,5 @@ fn split_string(allocator: std.mem.Allocator, str: []const u8) ![][]u8 {
 }
 
 fn random_str(msgs: [][]const u8) []const u8 {
-    return msgs[std.crypto.random.intRangeAtMost(usize, 0, msgs.len-1)];
+    return msgs[std.crypto.random.intRangeAtMost(usize, 0, msgs.len - 1)];
 }
